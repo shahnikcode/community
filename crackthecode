@@ -1,0 +1,159 @@
+Hi Professor dykes,
+I wasnt able to  crack the code and i have provided my code here. Any ideas on what i should do?
+
+---
+title: "Activity 3.1"
+author: "Azure"
+output: github_document
+---
+
+Today you will be creating and manipulating vectors, lists, and data frames to uncover a top secret message.
+
+As you work through this document with your Team members, remember to:
+
+- Ask questions
+- Google is your friend!
+  If an error is confusing, copy it into Google and see what other people are saying.
+  If you don't know how to do something, search for it.
+- Just because there is no error message doesn't mean everything went smoothly.
+  Use the console to check each step and make sure you have accomplished what you wanted to accomplish.
+
+Do not edit this first R code chunk.
+This will allow you to knit your document and view errors within the knitted report.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(error = TRUE)
+```
+
+### Setup
+
+Each of the following R chunks will cause an error and/or do the desired task incorrectly.  Find the mistake, and correct it to complete the intended action.
+
+Create three vectors that contain: 1) the lower case letters, 2) the lower case letters, and 3) some punctuation marks.
+
+```{r}
+lower_case <- c("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z")
+
+upper_case <- c("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
+
+punctuation <- c(".", ",", "!", "?", "'", "'", "(", ")", " ", "-", ";", ":")
+```
+
+
+
+Make one long vector containing all the symbols.
+
+```{r}
+my_symbols <- c(lower_case, upper_case, punctuation)
+```
+
+
+
+Turn the `my_symbols` vector into a data frame, with the variable name "Symbol".
+
+```{r}
+my_symbols <- as.data.frame(my_symbols)
+
+Symbol <- names(my_symbols)
+```
+
+
+Find the total number of symbols we have in our data frame.  
+
+```{r}
+len <- nrow(my_symbols)
+```
+
+Comment on what you noticed about the errors and how you used this information to correct the issues.
+
+
+5. Create a new variable in your dataframe that assigns a number to each symbol.
+
+```{r}
+my_symbols_num <- 1:len
+```
+
+
+
+![](README-img/noun_pause.png) **Planned Pause Point**: If things made sense, feel free to continue on while you wait. Otherwise, contact your instructor to have them verify your work.
+
+
+### Decoding the secret message.
+
+This chunk will load up the encoded secret message data and assign it as a vector.
+There are no errors here.
+
+```{r}
+# Read in full csv file
+top_secret <- readr::read_csv("data/secret_code.csv", col_names = FALSE)
+
+# Pick off only the column X1
+top_secret <- top_secret$X1
+
+```
+
+By altering this top secret set of numbers, you will be able to create a message.
+Write your own code to complete the steps below.
+
+1. Add 14 to every number.
+2. Multiply every number by 18, then subtract 257.
+3. Exponentiate every number.  (That is, do e ^ [number]. You may need to Google this!)
+4. Square every number.
+
+```{r}
+secret14 <- c(top_secret +14)
+
+secret4 <- c(secret14 * 18)
+
+secret257 <- c(secret4 -257)
+
+secretexp <- c(exp(secret257))
+secretsquare <-c(secretexp^2)
+```
+
+**HQ UPDATE:** Headquarters has informed you that at this stage of decoding, there should be 548 numbers in the secret message that are below 17.
+
+5. Turn your vector of numbers into a matrix with 5 columns.
+6. Separately from your top secret numbers, create a vector of all the even numbers between 1 and 260. Name it "evens". That is, "evens" should contain 2, 4, 6, 8, ..., 260.
+7. Subtract the "evens" vector from the first column of your secret message matrix.
+8. Subtract 100 from all numbers 18-24th rows of the 3rd column.
+9. Multiply all numbers in the 4th and 5th column by 2.
+10. Turn your matrix back into a vector.
+
+```{r}
+newmatrix= matrix(secretsquare, ncol = 5)
+evens<- seq(from = 2, to = 260, by = 2)
+newmatrix[,1]= newmatrix[,1]-evens
+
+newmatrix[18:24,3] <- newmatrix[18:24,3] - 100
+
+newmatrix[,4:5] <- newmatrix[,4:5] * 2
+
+newmatrix <- c(newmatrix)
+```
+
+**HQ UPDATE:** Headquarters has informed you that at this stage of decoding, all numbers in indices 500 and beyond are below 100.
+
+11. Take the square root of all numbers in indices 38 to 465.
+12. Round all numbers to the nearest whole number.
+13. Replace all instances of the number 39 with 20.
+
+```{r}
+newmatrixsqrt <- c(sqrt(newmatrix [38:465]))
+newmatrix2 <- replace(newmatrix, c(38:465), newmatrixsqrt)
+newmatrixround<- round(newmatrix2,digits=0)
+newmatrixround[newmatrixround == 39] <- 20
+
+newmatrixround3 <- newmatrixround[ newmatrixround %% 2 == 0]
+
+
+```
+
+```{r}
+stringr::str_c(my_symbols$Symbol[top_secret], collapse= ", ")
+```
+
+
+
+
+Push your updated report to your `<username>` branch - you are done with this `.Rmd` file and can go back to the README directions while you wait for you Team Members.
